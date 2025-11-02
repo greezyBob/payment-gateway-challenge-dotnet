@@ -13,11 +13,18 @@ public class PaymentsController(IPaymentService paymentService) : Controller
     private readonly IPaymentService _paymentService = paymentService;
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<PostPaymentResponse?>> GetPaymentAsync(Guid id)
+    [ProducesResponseType(typeof(GetPaymentResponse), 200)]
+    [ProducesResponseType(404)]
+    public async Task<ActionResult<GetPaymentResponse?>> GetPaymentAsync(Guid id)
     {
-        var payment = _paymentService.GetPaymentById(id);
+        var paymentResponse = _paymentService.GetPaymentById(id);
 
-        return new OkObjectResult(payment);
+        if (paymentResponse is null)
+        {
+            return NotFound();
+        }
+
+        return new OkObjectResult(paymentResponse);
     }
 
     [HttpPost]
