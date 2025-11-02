@@ -2,7 +2,7 @@
 using PaymentGateway.Api.Models;
 using PaymentGateway.Api.Models.Requests;
 
-namespace PaymentGateway.Api.Tests;
+namespace PaymentGateway.Api.UnitTests;
 
 public class PaymentMapperTests
 {

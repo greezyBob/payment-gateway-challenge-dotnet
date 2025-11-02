@@ -14,7 +14,7 @@ using PaymentGateway.Api.Services;
 
 using Xunit;
 
-namespace PaymentGateway.Api.Tests;
+namespace PaymentGateway.Api.IntegrationTests;
 
 public class PaymentsControllerTests
 {
