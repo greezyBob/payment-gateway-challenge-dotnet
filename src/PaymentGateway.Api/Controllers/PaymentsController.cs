@@ -21,7 +21,7 @@ public class PaymentsController(IPaymentService paymentService) : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<PostPaymentResponse>> PostPaymentAsync(PostPaymentRequest paymentRequest)
+    public async Task<ActionResult<PostPaymentResponse>> PostPaymentAsync([FromBody] PostPaymentRequest paymentRequest)
     {
         var payment = await _paymentService.AuthorizePayment(paymentRequest);
         return new OkObjectResult(payment);

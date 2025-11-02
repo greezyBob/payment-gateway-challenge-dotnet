@@ -1,12 +1,17 @@
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
 
 using PaymentGateway.Api.Configuration;
-using PaymentGateway.Api.Services;
-using FluentValidation;
+using PaymentGateway.Api.External;
 using PaymentGateway.Api.Models.Requests;
+using PaymentGateway.Api.Services;
 using PaymentGateway.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,14 +31,18 @@ builder.Services
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-builder.Services.AddHttpClient<IPaymentService, PaymentService>((provider, client) =>
-{
-    var options = provider.GetRequiredService<IOptions<BankOptions>>().Value;
-    client.BaseAddress = new Uri(options.BankUrl);
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-});
+builder.Services.AddHttpClient<IBankClient, BankClient>()
+    .ConfigureHttpClient((provider, client) =>
+    {
+        var options = provider.GetRequiredService<IOptions<BankOptions>>().Value;
+        client.BaseAddress = new Uri(options.BankUrl);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
+
+builder.Services.AddTransient<IPaymentService, PaymentService>();
 
 // Register FluentValidation validators
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<PostPaymentRequest>, PostPaymentRequestValidator>();
 
 var app = builder.Build();

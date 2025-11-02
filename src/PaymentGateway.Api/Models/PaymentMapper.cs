@@ -43,11 +43,16 @@ namespace PaymentGateway.Api.Models
      {
          ArgumentNullException.ThrowIfNull(payment);
          
+         // Return only the last four digits for the response
+         var lastFour = payment.CardNumber.Length >= 4
+             ? payment.CardNumber[^4..]
+             : payment.CardNumber;
+         
          return new PostPaymentResponse
             {
                 Id = payment.Id,
                 Status = payment.Status,
-                CardNumberLastFour = payment.CardNumber.ToString(),
+                CardNumberLastFour = lastFour,
                 ExpiryMonth = payment.ExpiryMonth,
                 ExpiryYear = payment.ExpiryYear,
                 Currency = payment.Currency,

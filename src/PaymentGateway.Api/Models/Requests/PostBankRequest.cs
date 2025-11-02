@@ -2,10 +2,10 @@
 {
     public class PostBankRequest
     {
-        public string CardNumber { get; set; }
-        public string ExpiryDate { get; set; }
-        public string Currency { get; set; }
+        public required string CardNumber { get; set; }
+        public required string ExpiryDate { get; set; }
+        public required string Currency { get; set; }
         public int Amount { get; set; }
-        public string Cvv { get; set; }
+        public required string Cvv { get; set; }
     }
 }
