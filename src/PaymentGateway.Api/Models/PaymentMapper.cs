@@ -8,71 +8,71 @@ namespace PaymentGateway.Api.Models
  {
      public static Payment ToPayment(this PostPaymentRequest request)
      {
-         if (request == null) throw new ArgumentNullException(nameof(request));
-       
-         return new Payment
-             {
-                 Id = Guid.NewGuid(),
-                 CardNumber = request.CardNumber,
-                 ExpiryDate = request.ExpiryMonth,
-                 ExpiryYear = request.ExpiryYear,
-                 Currency = request.Currency,
-                 Amount = request.Amount,
-                 Cvv = request.Cvv,
-                 Status = PaymentStatus.Pending
-         };
+        ArgumentNullException.ThrowIfNull(request);
+
+        return new Payment
+         {
+            Id = Guid.NewGuid(),
+            CardNumber = request.CardNumber,
+            ExpiryMonth = request.ExpiryMonth,
+            ExpiryYear = request.ExpiryYear,
+            Currency = request.Currency,
+            Amount = request.Amount,
+            Cvv = request.Cvv,
+            Status = PaymentStatus.Pending
+          };
      }
 
-     public static PostBankRequest ToPostBankRequest(this PostPaymentRequest request)
+     public static PostBankRequest ToPostBankRequest(this Payment payment)
      {
-         if (request == null) throw new ArgumentNullException(nameof(request));
+        ArgumentNullException.ThrowIfNull(payment);
 
-         var expiry = $"{request.ExpiryMonth:D2}/{request.ExpiryYear % 100:D2}";
+        var expiry = $"{payment.ExpiryMonth:D2}/{payment.ExpiryYear % 100:D2}";
 
          return new PostBankRequest
-             {
-                 CardNumber = request.CardNumber,
-                 ExpiryDate = expiry,
-                 Currency = request.Currency,
-                 Amount = request.Amount,
-                 Cvv = request.Cvv
-             };
+          {
+            CardNumber = payment.CardNumber,
+            ExpiryDate = expiry,
+            Currency = payment.Currency,
+            Amount = payment.Amount,
+            Cvv = payment.Cvv
+          };
      }
 
      public static PostPaymentResponse ToPostPaymentResponse(this Payment payment)
      {
-         if (payment == null) throw new ArgumentNullException(nameof(payment));
+         ArgumentNullException.ThrowIfNull(payment);
          
          return new PostPaymentResponse
-             {
-                 Id = payment.Id,
-                 Status = payment.Status,
-                 CardNumberLastFour = payment.CardNumber.ToString(),
-                 ExpiryMonth = payment.ExpiryDate,
-                 ExpiryYear = payment.ExpiryYear,
-                 Currency = payment.Currency,
-                 Amount = payment.Amount
-             };
+            {
+                Id = payment.Id,
+                Status = payment.Status,
+                CardNumberLastFour = payment.CardNumber.ToString(),
+                ExpiryMonth = payment.ExpiryMonth,
+                ExpiryYear = payment.ExpiryYear,
+                Currency = payment.Currency,
+                Amount = payment.Amount
+            };
      }
 
      public static GetPaymentResponse ToGetPaymentResponse(this Payment payment)
      {
-         if (payment == null) throw new ArgumentNullException(nameof(payment));
+         ArgumentNullException.ThrowIfNull(payment);
 
          var lastFour = payment.CardNumber.Length >= 4
              ? payment.CardNumber[^4..]
              : payment.CardNumber;
 
-            return new GetPaymentResponse
-             {
-                 Id = payment.Id,
-                 Status = payment.Status,
-                 CardNumberLastFour = lastFour,
-                 ExpiryMonth = payment.ExpiryDate,
-                 ExpiryYear = payment.ExpiryYear,
-                 Currency = payment.Currency,
-                 Amount = payment.Amount
-             };
+         return new GetPaymentResponse
+            {
+                Id = payment.Id,
+                Status = payment.Status,
+                CardNumberLastFour = lastFour,
+                ExpiryMonth = payment.ExpiryMonth,
+                ExpiryYear = payment.ExpiryYear,
+                Currency = payment.Currency,
+                Amount = payment.Amount
+            };
      }
  }
 }
