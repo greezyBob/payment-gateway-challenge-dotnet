@@ -1,16 +1,22 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Xunit;
+
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
+using Newtonsoft.Json.Linq;
+
+using NuGet.Frameworks;
+
 using PaymentGateway.Api.Controllers;
+using PaymentGateway.Api.External;
+using PaymentGateway.Api.Models;
+using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
 using PaymentGateway.Api.Services;
-using PaymentGateway.Api.Models;
-using PaymentGateway.Api.External;
-using PaymentGateway.Api.Models.Requests;
+
+using Xunit;
 
 namespace PaymentGateway.Api.Tests;
 
@@ -98,6 +104,7 @@ public class PaymentsControllerTests
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(paymentResponse);
+        Assert.True(paymentResponse!.CardNumberLastFour.Length <= 4, $"Expected length <= 4, but got {paymentResponse.CardNumberLastFour.Length}");
     }
 
     [Fact]
