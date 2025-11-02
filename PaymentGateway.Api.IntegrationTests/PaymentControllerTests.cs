@@ -72,7 +72,7 @@ public class PaymentsControllerTests
     }
 
     [Fact]
-    public async Task Get_Payments_ById_ReturnsOkWithPayment()
+    public async Task GetPayments_ById_ReturnsOkWithPayment()
     {
         // Arrange
         var payment = new Payment
@@ -101,7 +101,7 @@ public class PaymentsControllerTests
     }
 
     [Fact]
-    public async Task Get_Payments_ByUnknownId_ReturnsNotFound()
+    public async Task GetPayments_ByUnknownId_ReturnsNotFound()
     {
         // Arrange
         var (client, _) = CreateClientWithRepo();
@@ -114,7 +114,7 @@ public class PaymentsControllerTests
     }
 
     [Fact]
-    public async Task Post_Payments_ValidRequest_ReturnsOkAndSaved()
+    public async Task PostPayments_ValidRequest_ReturnsOkAndSaved()
     {
         // Arrange
         var paymentsRepository = new PaymentsRepository();
@@ -137,7 +137,7 @@ public class PaymentsControllerTests
     }
 
     [Fact]
-    public async Task Post_Payments_InvalidRequest_ReturnsBadRequest()
+    public async Task PostPayments_InvalidRequest_ReturnsBadRequest()
     {
         // Arrange
         var (client, _) = CreateClientWithRepo();
@@ -152,7 +152,7 @@ public class PaymentsControllerTests
     }
 
     [Fact]
-    public async Task Post_Payments_ValidRequest_ThenGetById_ReturnsSamePayment()
+    public async Task PostPayments_ValidRequest_ThenGetById_ReturnsSamePayment()
     {
         // Arrange
         var paymentsRepository = new PaymentsRepository();
