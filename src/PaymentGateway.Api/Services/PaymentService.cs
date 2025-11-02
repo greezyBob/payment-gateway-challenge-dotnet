@@ -11,51 +11,29 @@ namespace PaymentGateway.Api.Services
         Task<PostPaymentResponse> AuthorizePayment(PostPaymentRequest payment);
         GetPaymentResponse? GetPaymentById(Guid id);
     }
-    public class PaymentService(IBankClient client, PaymentsRepository repository) : IPaymentService
+    public class PaymentService(IBankClient client, IPaymentsRepository repository) : IPaymentService
     {
         private readonly IBankClient _bankClient = client;
-        private readonly PaymentsRepository _paymentsRepository = repository;
+        private readonly IPaymentsRepository _paymentsRepository = repository;
 
         public GetPaymentResponse? GetPaymentById(Guid id)
         {
            var payment =  _paymentsRepository.Get(id);
-            //convert to GetPaymentResponse
-            return new GetPaymentResponse()
-            {
-                Id = payment.Id,
-                Status = payment.Status,
-                CardNumberLastFour = payment.CardNumberLastFour,
-                ExpiryMonth = payment.ExpiryMonth,
-                ExpiryYear = payment.ExpiryYear,
-                Currency = payment.Currency,
-                Amount = payment.Amount
-            };
+           return payment?.ToGetPaymentResponse();
         }
 
-        public async Task<PostPaymentResponse> AuthorizePayment(PostPaymentRequest payment)
+        public async Task<PostPaymentResponse> AuthorizePayment(PostPaymentRequest paymentRequest)
         {
-            //convert PostPaymentRequest to Payment object
+            var payment = paymentRequest.ToPayment();
+            
+            var bankRequest = paymentRequest.ToPostBankRequest();
+            var bankReponse = await _bankClient.AuthorizeAsync(bankRequest);
 
-            //convert Payment object to PostBankRequest object
+            payment.Status = bankReponse.Authorized ? PaymentStatus.Authorized : PaymentStatus.Declined;
 
-            var bankReponse = await _bankClient.AuthorizeAsync(new PostBankRequest());
+            _paymentsRepository.Add(payment);
 
-            //update payment status based on BankResponse
-            //store Payment object in repository
-            _paymentsRepository.Add(new Payment());
-            //convert Payment object PostPaymentResponse object
-            var paymentResponse = new PostPaymentResponse()
-            {
-                CardNumberLastFour = payment.CardNumber,
-                ExpiryMonth = payment.ExpiryMonth,
-                ExpiryYear = payment.ExpiryYear,
-                Currency = payment.Currency,
-                Amount = payment.Amount,
-                Id = bankResponse!.Id,
-                Status = bankResponse.Authorized ? PaymentStatus.Authorized : PaymentStatus.Declined,
-            };
-
-            return paymentResponse;
+            return payment.ToPostPaymentResponse();
         }
     }
 }

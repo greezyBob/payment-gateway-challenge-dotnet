@@ -18,8 +18,9 @@ namespace PaymentGateway.Api.Models
                  ExpiryYear = request.ExpiryYear,
                  Currency = request.Currency,
                  Amount = request.Amount,
-                 Cvv = request.Cvv
-             };
+                 Cvv = request.Cvv,
+                 Status = PaymentStatus.Pending
+         };
      }
 
      public static PostBankRequest ToPostBankRequest(this PostPaymentRequest request)
@@ -38,15 +39,14 @@ namespace PaymentGateway.Api.Models
              };
      }
 
-     public static PostPaymentResponse ToPostPaymentResponse(this Payment payment, PostBankResponse bankResponse)
+     public static PostPaymentResponse ToPostPaymentResponse(this Payment payment)
      {
          if (payment == null) throw new ArgumentNullException(nameof(payment));
-         if (bankResponse == null) throw new ArgumentNullException(nameof(bankResponse));
-
+         
          return new PostPaymentResponse
              {
                  Id = payment.Id,
-                 Status = bankResponse.Authorized ? PaymentStatus.Authorized : PaymentStatus.Declined,
+                 Status = payment.Status,
                  CardNumberLastFour = payment.CardNumber.ToString(),
                  ExpiryMonth = payment.ExpiryDate,
                  ExpiryYear = payment.ExpiryYear,
@@ -59,12 +59,15 @@ namespace PaymentGateway.Api.Models
      {
          if (payment == null) throw new ArgumentNullException(nameof(payment));
 
+         var lastFour = payment.CardNumber.Length >= 4
+             ? payment.CardNumber[^4..]
+             : payment.CardNumber;
 
-         return new GetPaymentResponse
+            return new GetPaymentResponse
              {
                  Id = payment.Id,
                  Status = payment.Status,
-                 CardNumberLastFour = payment.CardNumber.ToString(),
+                 CardNumberLastFour = lastFour,
                  ExpiryMonth = payment.ExpiryDate,
                  ExpiryYear = payment.ExpiryYear,
                  Currency = payment.Currency,
