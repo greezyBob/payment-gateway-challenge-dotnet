@@ -13,12 +13,12 @@ namespace PaymentGateway.Api.External
     public class BankClient(HttpClient client) : IBankClient
     {
         private readonly HttpClient _httpClient = client;
-        private readonly JsonSerializerOptions _jsonOptions = new ()
-          {
+        private readonly JsonSerializerOptions _jsonOptions = new()
+        {
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
             PropertyNameCaseInsensitive = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-          };
+        };
 
         public async Task<PostBankResponse> AuthorizeAsync(PostBankRequest request)
         {

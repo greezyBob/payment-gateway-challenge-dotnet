@@ -5,10 +5,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-using Newtonsoft.Json.Linq;
-
-using NuGet.Frameworks;
-
 using PaymentGateway.Api.Controllers;
 using PaymentGateway.Api.External;
 using PaymentGateway.Api.Models;

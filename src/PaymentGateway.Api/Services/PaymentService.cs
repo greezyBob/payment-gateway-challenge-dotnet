@@ -7,7 +7,7 @@ namespace PaymentGateway.Api.Services
 {
 
     public interface IPaymentService
-    {   
+    {
         Task<PostPaymentResponse> AuthorizePayment(PostPaymentRequest payment);
         GetPaymentResponse? GetPaymentById(Guid id);
     }
@@ -18,14 +18,14 @@ namespace PaymentGateway.Api.Services
 
         public GetPaymentResponse? GetPaymentById(Guid id)
         {
-           var payment =  _paymentsRepository.Get(id);
-           return payment?.ToGetPaymentResponse();
+            var payment = _paymentsRepository.Get(id);
+            return payment?.ToGetPaymentResponse();
         }
 
         public async Task<PostPaymentResponse> AuthorizePayment(PostPaymentRequest paymentRequest)
         {
             var payment = paymentRequest.ToPayment();
-            
+
             var bankRequest = payment.ToPostBankRequest();
             var bankReponse = await _bankClient.AuthorizeAsync(bankRequest);
 

@@ -1,4 +1,5 @@
 using FluentValidation;
+
 using PaymentGateway.Api.Models.Requests;
 
 namespace PaymentGateway.Api.Validators;

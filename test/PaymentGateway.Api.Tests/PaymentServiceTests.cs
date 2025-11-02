@@ -1,8 +1,8 @@
-using PaymentGateway.Api.Services;
 using PaymentGateway.Api.External;
+using PaymentGateway.Api.Models;
 using PaymentGateway.Api.Models.Requests;
 using PaymentGateway.Api.Models.Responses;
-using PaymentGateway.Api.Models;
+using PaymentGateway.Api.Services;
 
 namespace PaymentGateway.Api.Tests;
 
