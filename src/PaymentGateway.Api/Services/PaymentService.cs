@@ -26,7 +26,7 @@ namespace PaymentGateway.Api.Services
         {
             var payment = paymentRequest.ToPayment();
             
-            var bankRequest = paymentRequest.ToPostBankRequest();
+            var bankRequest = payment.ToPostBankRequest();
             var bankReponse = await _bankClient.AuthorizeAsync(bankRequest);
 
             payment.Status = bankReponse.Authorized ? PaymentStatus.Authorized : PaymentStatus.Declined;
